@@ -4,38 +4,107 @@
   gap: var(--spacing-lg);
 }
 
-.day-list-container {
-  padding: var(--spacing-lg);
+.day-list-nav {
   display: flex;
-  flex-direction: column;
-}
-
-.day-list-item {
-  border: 1px solid rgba(0,0,0,0.1);
-  margin-bottom: 8px;
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  background-color: white;
+  gap: 8px;
 }
 
-.item-text {
-  font-size: 0.9375rem;
-  line-height: 1.4;
-}
-
-.legacy-btn {
-  background-color: #f1f5f9;
-  border: 1px solid rgba(0,0,0,0.2);
-  padding: 4px 12px;
-  border-radius: 2px;
+.day-nav-btn {
+  padding: 7px 14px;
+  background: var(--bg-surface);
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font-family);
   cursor: pointer;
-  font-size: 0.8125rem;
+  color: var(--text-main);
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.day-nav-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: #9ca3af;
 }
 
 .date-picker-input {
-  padding: 8px;
-  border: 1px solid rgba(0,0,0,0.1);
+  padding: 7px 12px;
+  border: 1px solid #d1d5db;
   border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-family: var(--font-family);
+  color: var(--text-main);
+  background: white;
+}
+
+.date-picker-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.day-list-container {
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 200px;
+}
+
+.day-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary);
+  background: var(--bg-color);
+  transition: background 0.15s;
+}
+
+.day-list-item:hover {
+  background: #eef2ff;
+}
+
+.item-time {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 100px;
+  font-variant-numeric: tabular-nums;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-title {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 0.9375rem;
+}
+
+.item-meta {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.day-list-action-btn {
+  padding: 5px 12px;
+  font-size: 0.8125rem;
+  background: var(--bg-surface);
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 500;
+  font-family: var(--font-family);
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.day-list-action-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
 }

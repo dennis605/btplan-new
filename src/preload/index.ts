@@ -29,7 +29,17 @@ const api = {
     createTemplate: (data: any) => ipcRenderer.invoke('db:create-template', data),
     // Attendance
     getAttendance: (appointmentId: string) => ipcRenderer.invoke('db:get-attendance', appointmentId),
-    updateAttendance: (appointmentId: string, residents: any[]) => ipcRenderer.invoke('db:update-attendance', appointmentId, residents)
+    updateAttendance: (appointmentId: string, residents: any[]) => ipcRenderer.invoke('db:update-attendance', appointmentId, residents),
+    // Locations
+    getLocations: () => ipcRenderer.invoke('db:get-locations'),
+    createLocation: (data: any) => ipcRenderer.invoke('db:create-location', data),
+    updateLocation: (data: any) => ipcRenderer.invoke('db:update-location', data),
+    deleteLocation: (id: string) => ipcRenderer.invoke('db:delete-location', id),
+    // Categories
+    getCategories: () => ipcRenderer.invoke('db:get-categories'),
+    createCategory: (data: any) => ipcRenderer.invoke('db:create-category', data),
+    updateCategory: (data: any) => ipcRenderer.invoke('db:update-category', data),
+    deleteCategory: (id: string) => ipcRenderer.invoke('db:delete-category', id),
   },
   app: {
     selectFile: () => ipcRenderer.invoke('app:select-file'),

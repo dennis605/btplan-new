@@ -31,6 +31,16 @@ declare global {
         // Attendance
         getAttendance: (appointmentId: string) => Promise<any[]>
         updateAttendance: (appointmentId: string, residents: any[]) => Promise<{ success: boolean; error?: string }>
+        // Locations
+        getLocations: () => Promise<any[]>
+        createLocation: (data: any) => Promise<{ success: boolean; id?: string; error?: string }>
+        updateLocation: (data: any) => Promise<{ success: boolean; error?: string }>
+        deleteLocation: (id: string) => Promise<{ success: boolean; error?: string }>
+        // Categories
+        getCategories: () => Promise<any[]>
+        createCategory: (data: any) => Promise<{ success: boolean; id?: string; error?: string }>
+        updateCategory: (data: any) => Promise<{ success: boolean; error?: string }>
+        deleteCategory: (id: string) => Promise<{ success: boolean; error?: string }>
       },
       app: {
         selectFile: () => Promise<string | null>,

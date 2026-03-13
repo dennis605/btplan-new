@@ -1,8 +1,133 @@
+.calendar-layout {
+  display: flex;
+  height: 100%;
+  gap: var(--spacing-lg);
+  overflow: hidden;
+}
+
+.mini-cal-sidebar {
+  width: 260px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.mini-cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.mini-cal-month {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--text-main);
+}
+
+.mini-nav-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+
+.mini-nav-btn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--primary);
+}
+
+.mini-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.mini-wd-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.mini-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.mini-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text-main);
+  font-family: var(--font-family);
+  transition: all 0.2s;
+}
+
+.mini-day:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.mini-day.mini-today {
+  color: var(--primary);
+  font-weight: 800;
+  background: var(--primary-light);
+}
+
+.mini-day.mini-selected-week {
+  background: #eef2ff;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.mini-cal-actions {
+  margin-top: auto;
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid #f1f5f9;
+}
+
+.mini-action-btn {
+  width: 100%;
+  padding: 8px;
+  background: var(--bg-surface);
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mini-action-btn:hover {
+  background: var(--bg-surface-hover);
+}
+
 .calendar-page {
   display: flex;
   flex-direction: column;
+  flex: 1;
   height: 100%;
   gap: var(--spacing-lg);
+  min-width: 0;
   animation: fadeIn 0.4s ease-out;
 }
 

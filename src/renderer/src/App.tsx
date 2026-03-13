@@ -10,6 +10,7 @@ import { DayViewPage } from './pages/DayView'
 import { ReportsPage } from './pages/Reports'
 import { SearchPage } from './pages/Search'
 import { DayListPage } from './pages/DayList'
+import { SettingsPage } from './pages/Settings'
 
 function App(): ReactElement {
   return (
@@ -26,6 +27,7 @@ function App(): ReactElement {
           <Route path="residents" element={<ResidentsPage />} />
           <Route path="activities" element={<ActivitiesPage />} />
           <Route path="staff" element={<StaffPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
       </Routes>
     </MemoryRouter>

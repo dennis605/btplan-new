@@ -315,6 +315,52 @@ app.whenReady().then(() => {
     }
   })
 
+  // --- LOCATIONS ---
+  ipcMain.handle('db:get-locations', () => {
+    try { return getDb().prepare('SELECT * FROM locations ORDER BY name').all() }
+    catch { return [] }
+  })
+  ipcMain.handle('db:create-location', (_, data) => {
+    try {
+      const id = require('crypto').randomUUID()
+      getDb().prepare('INSERT INTO locations (id, name, description) VALUES (@id, @name, @description)').run({ id, ...data, description: data.description || '' })
+      return { success: true, id }
+    } catch (e) { return { success: false, error: String(e) } }
+  })
+  ipcMain.handle('db:update-location', (_, data) => {
+    try {
+      getDb().prepare('UPDATE locations SET name = @name, description = @description WHERE id = @id').run(data)
+      return { success: true }
+    } catch (e) { return { success: false, error: String(e) } }
+  })
+  ipcMain.handle('db:delete-location', (_, id) => {
+    try { getDb().prepare('DELETE FROM locations WHERE id = ?').run(id); return { success: true } }
+    catch (e) { return { success: false, error: String(e) } }
+  })
+
+  // --- CATEGORIES ---
+  ipcMain.handle('db:get-categories', () => {
+    try { return getDb().prepare('SELECT * FROM categories ORDER BY name').all() }
+    catch { return [] }
+  })
+  ipcMain.handle('db:create-category', (_, data) => {
+    try {
+      const id = require('crypto').randomUUID()
+      getDb().prepare('INSERT INTO categories (id, name, color) VALUES (@id, @name, @color)').run({ id, name: data.name, color: data.color || '#6b7280' })
+      return { success: true, id }
+    } catch (e) { return { success: false, error: String(e) } }
+  })
+  ipcMain.handle('db:update-category', (_, data) => {
+    try {
+      getDb().prepare('UPDATE categories SET name = @name, color = @color WHERE id = @id').run(data)
+      return { success: true }
+    } catch (e) { return { success: false, error: String(e) } }
+  })
+  ipcMain.handle('db:delete-category', (_, id) => {
+    try { getDb().prepare('DELETE FROM categories WHERE id = ?').run(id); return { success: true } }
+    catch (e) { return { success: false, error: String(e) } }
+  })
+
   // --- TEMPLATES ---
   ipcMain.handle('db:get-templates', () => {
     try {

@@ -7,20 +7,30 @@ import './Activities.css';
 
 export function ActivitiesPage(): ReactElement {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [categories, setCategories] = useState<{id: string, name: string}[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Partial<Activity> | null>(null);
 
-  const fetchActivities = async () => {
-    const data = await window.api.db.getActivities();
-    setActivities(data);
+  const fetchData = async () => {
+    const [actData, catData] = await Promise.all([
+      window.api.db.getActivities(),
+      window.api.db.getCategories()
+    ]);
+    setActivities(actData);
+    setCategories(catData);
   };
 
   useEffect(() => {
-    fetchActivities();
+    fetchData();
   }, []);
 
   const handleOpenAddModal = () => {
-    setEditingActivity({ name: '', category: 'Gruppe', durationMinutes: 30, color: '#4f46e5' });
+    setEditingActivity({ 
+      name: '', 
+      category: categories[0]?.name || 'Gruppe', 
+      durationMinutes: 30, 
+      color: '#4f46e5' 
+    });
     setIsModalOpen(true);
   };
 
@@ -39,7 +49,7 @@ export function ActivitiesPage(): ReactElement {
       } else {
         await window.api.db.createActivity(editingActivity);
       }
-      fetchActivities();
+      fetchData();
       setIsModalOpen(false);
     } catch (error) {
       alert('Fehler beim Speichern der Aktivität');
@@ -49,7 +59,7 @@ export function ActivitiesPage(): ReactElement {
   const handleDelete = async (id: string) => {
     if (confirm('Soll diese Aktivitätsart gelöscht werden?')) {
       await window.api.db.deleteActivity(id);
-      fetchActivities();
+      fetchData();
     }
   };
 
@@ -102,13 +112,9 @@ export function ActivitiesPage(): ReactElement {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--spacing-md)' }}>
             <Select 
               label="Kategorie" 
-              value={editingActivity?.category || 'Gruppe'}
+              value={editingActivity?.category || ''}
               onChange={e => setEditingActivity({...editingActivity, category: e.target.value})}
-              options={[
-                { value: 'Gruppe', label: 'Gruppe' },
-                { value: 'Einzel', label: 'Einzelangebot' },
-                { value: 'Ausflug', label: 'Ausflug' }
-              ]}
+              options={categories.map(c => ({ value: c.name, label: c.name }))}
             />
             <Input 
               label="Standard-Dauer (Min)" 

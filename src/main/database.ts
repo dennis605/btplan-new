@@ -75,6 +75,18 @@ export function initDatabase(): DatabaseType {
       isTP BOOLEAN DEFAULT 0
     );
 
+    CREATE TABLE IF NOT EXISTS locations (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      description TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS categories (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      color TEXT DEFAULT '#6b7280'
+    );
+
     CREATE TABLE IF NOT EXISTS attendance (
       appointmentId TEXT NOT NULL,
       residentId TEXT NOT NULL,
@@ -86,6 +98,48 @@ export function initDatabase(): DatabaseType {
       FOREIGN KEY (residentId) REFERENCES residents (id) ON DELETE CASCADE
     );
   `);
+
+  // Migrations: add missing columns to existing DBs
+  const addColumnIfMissing = (table: string, column: string, def: string) => {
+    try {
+      db!.prepare(`ALTER TABLE ${table} ADD COLUMN ${column} ${def}`).run();
+    } catch { /* Column already exists */ }
+  };
+
+  // Special Migration for attendance: eventId -> appointmentId
+  try {
+    const tableInfo = db!.prepare("PRAGMA table_info(attendance)").all() as any[];
+    const hasEventId = tableInfo.some(col => col.name === 'eventId');
+    if (hasEventId) {
+      console.log('🔄 Migrating attendance table: eventId -> appointmentId');
+      db!.transaction(() => {
+        db!.exec(`
+          CREATE TABLE attendance_new (
+            appointmentId TEXT NOT NULL,
+            residentId TEXT NOT NULL,
+            status TEXT DEFAULT 'planned',
+            notes TEXT,
+            isP BOOLEAN DEFAULT 0,
+            PRIMARY KEY (appointmentId, residentId),
+            FOREIGN KEY (appointmentId) REFERENCES appointments (id) ON DELETE CASCADE,
+            FOREIGN KEY (residentId) REFERENCES residents (id) ON DELETE CASCADE
+          );
+          INSERT INTO attendance_new (appointmentId, residentId, status)
+          SELECT eventId, residentId, status FROM attendance;
+          DROP TABLE attendance;
+          ALTER TABLE attendance_new RENAME TO attendance;
+        `);
+      })();
+    }
+  } catch (e) {
+    console.error('Migration failed:', e);
+  }
+
+  addColumnIfMissing('attendance', 'isP', 'BOOLEAN DEFAULT 0');
+  addColumnIfMissing('attendance', 'notes', 'TEXT');
+  addColumnIfMissing('appointments', 'notesInternal', 'TEXT');
+  addColumnIfMissing('appointments', 'prepMinutes', 'INTEGER DEFAULT 0');
+  addColumnIfMissing('appointments', 'isTP', 'BOOLEAN DEFAULT 0');
 
   console.log('✅ SQLite Database initialized at:', dbPath);
   return db;

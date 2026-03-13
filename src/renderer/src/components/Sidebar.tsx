@@ -53,6 +53,13 @@ export function Sidebar() {
             <span>{item.label}</span>
           </NavLink>
         ))}
+
+        <div className="nav-divider" />
+        <div className="nav-section-label">System</div>
+        <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}>
+          <span className="nav-icon">⚙</span>
+          <span>Einstellungen</span>
+        </NavLink>
       </nav>
       
       <div className="sidebar-footer">
