@@ -27,6 +27,7 @@ const api = {
     // Templates
     getTemplates: () => ipcRenderer.invoke('db:get-templates'),
     createTemplate: (data: any) => ipcRenderer.invoke('db:create-template', data),
+    deleteTemplate: (id: string) => ipcRenderer.invoke('db:delete-template', id),
     // Attendance
     getAttendance: (appointmentId: string) => ipcRenderer.invoke('db:get-attendance', appointmentId),
     updateAttendance: (appointmentId: string, residents: any[]) => ipcRenderer.invoke('db:update-attendance', appointmentId, residents),

@@ -28,6 +28,7 @@ declare global {
         // Templates
         getTemplates: () => Promise<any[]>
         createTemplate: (data: any) => Promise<{ success: boolean; id?: string; error?: string }>
+        deleteTemplate: (id: string) => Promise<{ success: boolean; error?: string }>
         // Attendance
         getAttendance: (appointmentId: string) => Promise<any[]>
         updateAttendance: (appointmentId: string, residents: any[]) => Promise<{ success: boolean; error?: string }>

@@ -23,81 +23,14 @@ export function initDatabase(): DatabaseType {
   db = new Database(dbPath, { verbose: console.log });
   db.pragma('journal_mode = WAL');
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS residents (
-      id TEXT PRIMARY KEY,
-      firstName TEXT NOT NULL,
-      lastName TEXT NOT NULL,
-      status TEXT DEFAULT 'active',
-      ward TEXT,
-      notes TEXT
-    );
-
-    CREATE TABLE IF NOT EXISTS staff (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      role TEXT DEFAULT 'Betreuungskraft'
-    );
-
-    CREATE TABLE IF NOT EXISTS activities (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      category TEXT,
-      durationMinutes INTEGER DEFAULT 30,
-      color TEXT DEFAULT '#4F46E5'
-    );
-
-    CREATE TABLE IF NOT EXISTS appointments (
-      id TEXT PRIMARY KEY,
-      activityId TEXT NOT NULL,
-      staffId TEXT,
-      date TEXT NOT NULL,
-      startTime TEXT NOT NULL,
-      endTime TEXT NOT NULL,
-      room TEXT,
-      notes TEXT,
-      notesInternal TEXT,
-      prepMinutes INTEGER DEFAULT 0,
-      isTP BOOLEAN DEFAULT 0,
-      status TEXT DEFAULT 'scheduled',
-      FOREIGN KEY (activityId) REFERENCES activities (id),
-      FOREIGN KEY (staffId) REFERENCES staff (id)
-    );
-
-    CREATE TABLE IF NOT EXISTS templates (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      activityId TEXT,
-      startTime TEXT,
-      endTime TEXT,
-      room TEXT,
-      notes TEXT,
-      isTP BOOLEAN DEFAULT 0
-    );
-
-    CREATE TABLE IF NOT EXISTS locations (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      description TEXT
-    );
-
-    CREATE TABLE IF NOT EXISTS categories (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      color TEXT DEFAULT '#6b7280'
-    );
-
-    CREATE TABLE IF NOT EXISTS attendance (
-      appointmentId TEXT NOT NULL,
-      residentId TEXT NOT NULL,
-      status TEXT DEFAULT 'planned',
-      notes TEXT,
-      isP BOOLEAN DEFAULT 0,
-      PRIMARY KEY (appointmentId, residentId),
-      FOREIGN KEY (appointmentId) REFERENCES appointments (id) ON DELETE CASCADE,
-      FOREIGN KEY (residentId) REFERENCES residents (id) ON DELETE CASCADE
-    );
-  `);
+  db.exec(`CREATE TABLE IF NOT EXISTS residents (id TEXT PRIMARY KEY, firstName TEXT NOT NULL, lastName TEXT NOT NULL, status TEXT DEFAULT 'active', ward TEXT, notes TEXT);`);
+  db.exec(`CREATE TABLE IF NOT EXISTS staff (id TEXT PRIMARY KEY, name TEXT NOT NULL, role TEXT DEFAULT 'Betreuungskraft');`);
+  db.exec(`CREATE TABLE IF NOT EXISTS activities (id TEXT PRIMARY KEY, name TEXT NOT NULL, category TEXT, durationMinutes INTEGER DEFAULT 30, color TEXT DEFAULT '#4F46E5');`);
+  db.exec(`CREATE TABLE IF NOT EXISTS appointments (id TEXT PRIMARY KEY, activityId TEXT NOT NULL, staffId TEXT, date TEXT NOT NULL, startTime TEXT NOT NULL, endTime TEXT NOT NULL, room TEXT, notes TEXT, notesInternal TEXT, prepMinutes INTEGER DEFAULT 0, isTP BOOLEAN DEFAULT 0, status TEXT DEFAULT 'scheduled', FOREIGN KEY (activityId) REFERENCES activities (id), FOREIGN KEY (staffId) REFERENCES staff (id));`);
+  db.exec(`CREATE TABLE IF NOT EXISTS templates (id TEXT PRIMARY KEY, name TEXT NOT NULL, activityId TEXT, startTime TEXT, endTime TEXT, room TEXT, notes TEXT, isTP BOOLEAN DEFAULT 0);`);
+  db.exec(`CREATE TABLE IF NOT EXISTS locations (id TEXT PRIMARY KEY, name TEXT NOT NULL, description TEXT);`);
+  db.exec(`CREATE TABLE IF NOT EXISTS categories (id TEXT PRIMARY KEY, name TEXT NOT NULL, color TEXT DEFAULT '#6b7280');`);
+  db.exec(`CREATE TABLE IF NOT EXISTS attendance (appointmentId TEXT NOT NULL, residentId TEXT NOT NULL, status TEXT DEFAULT 'planned', notes TEXT, isP BOOLEAN DEFAULT 0, PRIMARY KEY (appointmentId, residentId), FOREIGN KEY (appointmentId) REFERENCES appointments (id) ON DELETE CASCADE, FOREIGN KEY (residentId) REFERENCES residents (id) ON DELETE CASCADE);`);
 
   // Migrations: add missing columns to existing DBs
   const addColumnIfMissing = (table: string, column: string, def: string) => {
@@ -105,6 +38,10 @@ export function initDatabase(): DatabaseType {
       db!.prepare(`ALTER TABLE ${table} ADD COLUMN ${column} ${def}`).run();
     } catch { /* Column already exists */ }
   };
+
+  addColumnIfMissing('activities', 'category', 'TEXT');
+  addColumnIfMissing('activities', 'durationMinutes', 'INTEGER DEFAULT 30');
+  addColumnIfMissing('activities', 'color', 'TEXT DEFAULT "#4F46E5"');
 
   // Special Migration for attendance: eventId -> appointmentId
   try {

@@ -21,6 +21,7 @@ export function CalendarPage(): ReactElement {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [residents, setResidents] = useState<Resident[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAppt, setEditingAppt] = useState<ApptForm | null>(null);
   const [attendance, setAttendance] = useState<Attendance[]>([]);
@@ -36,8 +37,11 @@ export function CalendarPage(): ReactElement {
   const [newActColor, setNewActColor] = useState('#2563eb');
   const [creatingAct, setCreatingAct] = useState(false);
 
+  // Template Auswahl
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+
   // Sidebar Zustand
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -45,16 +49,18 @@ export function CalendarPage(): ReactElement {
   const loadData = async () => {
     const start = format(weekDays[0], 'yyyy-MM-dd');
     const end = format(weekDays[6], 'yyyy-MM-dd');
-    const [apptData, actData, staffData, resData] = await Promise.all([
+    const [apptData, actData, staffData, resData, templateData] = await Promise.all([
       window.api.db.getAppointments({ start, end }),
       window.api.db.getActivities(),
       window.api.db.getStaff(),
       window.api.db.getResidents(),
+      window.api.db.getTemplates ? window.api.db.getTemplates() : Promise.resolve([]),
     ]);
     setAppointments(apptData);
     setActivities(actData);
     setStaff(staffData);
     setResidents(resData);
+    setTemplates(templateData);
   };
 
   useEffect(() => { loadData(); }, [currentDate]);
@@ -130,6 +136,36 @@ export function CalendarPage(): ReactElement {
     } finally { setSaving(false); }
   };
 
+  const handleSaveAsTemplate = async () => {
+    if (!editingAppt) return;
+    if (!editingAppt.activityId) {
+      alert('Bitte wählen Sie erst eine Aktivität aus, bevor Sie diese als Vorlage speichern.');
+      return;
+    }
+    const name = prompt('Name für die neue Vorlage:', activities.find(a => a.id === editingAppt.activityId)?.name || '');
+    if (!name) return;
+
+    try {
+      const result = await window.api.db.createTemplate({
+        name,
+        activityId: editingAppt.activityId,
+        startTime: editingAppt.startTime,
+        endTime: editingAppt.endTime,
+        room: editingAppt.room,
+        notes: editingAppt.notes,
+        isTP: editingAppt.isTP ? 1 : 0
+      });
+      if (result.success) {
+        alert('Vorlage erfolgreich gespeichert!');
+        await loadData(); // Reload templates
+      } else {
+        alert('Fehler beim Speichern der Vorlage: ' + result.error);
+      }
+    } catch (e) {
+      alert('Fehler: ' + String(e));
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('Termin wirklich löschen?')) return;
     await window.api.db.deleteAppointment(id);
@@ -143,6 +179,19 @@ export function CalendarPage(): ReactElement {
       ? attendance.filter(a => a.residentId !== residentId)
       : [...attendance, { appointmentId: editingAppt?.id || '', residentId, status: 'planned', isP: false }]
     );
+  };
+
+  const applyTemplate = (tpl: any) => {
+    setEditingAppt(prev => ({
+      ...prev,
+      activityId: tpl.activityId || prev?.activityId,
+      startTime: tpl.startTime || prev?.startTime,
+      endTime: tpl.endTime || prev?.endTime,
+      room: tpl.room || prev?.room,
+      notes: tpl.notes || prev?.notes,
+      isTP: tpl.isTP !== undefined ? !!tpl.isTP : prev?.isTP,
+    }));
+    setIsTemplateModalOpen(false);
   };
 
   const set = (key: keyof ApptForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
@@ -276,6 +325,9 @@ export function CalendarPage(): ReactElement {
             </div>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               {saveError && <span style={{ color: 'var(--danger)', fontSize: '0.875rem' }}>{saveError}</span>}
+              <Button variant="ghost" size="sm" onClick={handleSaveAsTemplate} title="Diese Daten als Vorlage speichern">
+                💾 Als Vorlage speichern
+              </Button>
               <Button variant="secondary" onClick={() => setIsModalOpen(false)}>Abbrechen</Button>
               <Button variant="primary" onClick={handleSave} disabled={saving}>
                 {saving ? 'Speichert...' : 'Speichern'}
@@ -286,6 +338,13 @@ export function CalendarPage(): ReactElement {
       >
         <div className="appt-form-grid">
           <div className="appt-form-left">
+            {/* Header mit Vorlage-Button */}
+            <div style={{ marginBottom: '16px', display: 'flex', gap: '8px' }}>
+              <Button variant="secondary" size="sm" onClick={() => setIsTemplateModalOpen(true)}>
+                📋 Vorlage auswählen
+              </Button>
+            </div>
+
             {/* Activity */}
             <div className="form-field">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -387,6 +446,42 @@ export function CalendarPage(): ReactElement {
               {residents.length === 0 && <p style={{ color: 'var(--text-muted)', padding: '12px', margin: 0 }}>Keine Bewohner angelegt.</p>}
             </div>
           </div>
+        </div>
+      </Modal>
+
+      {/* Template Auswahl Modal */}
+      <Modal
+        isOpen={isTemplateModalOpen}
+        onClose={() => setIsTemplateModalOpen(false)}
+        title="Vorlage auswählen"
+        width="500px"
+      >
+        <div className="template-list-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          {templates.length === 0 ? (
+            <p className="empty">Keine Vorlagen gefunden.</p>
+          ) : (
+            templates.map(tpl => (
+              <div 
+                key={tpl.id} 
+                className="template-item" 
+                onClick={() => applyTemplate(tpl)}
+                style={{ 
+                  padding: '12px', 
+                  borderBottom: '1px solid #e5e7eb', 
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  marginBottom: '6px',
+                  background: 'var(--bg-color)'
+                }}
+              >
+                <div style={{ fontWeight: 600, color: 'var(--primary)' }}>{tpl.name}</div>
+                <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+                  {activities.find(a => a.id === tpl.activityId)?.name || 'Unbekannte Aktivität'} 
+                  ({tpl.startTime} - {tpl.endTime})
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </Modal>
     </div>

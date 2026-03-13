@@ -386,6 +386,16 @@ app.whenReady().then(() => {
     }
   })
 
+  ipcMain.handle('db:delete-template', (_, id) => {
+    try {
+      getDb().prepare('DELETE FROM templates WHERE id = ?').run(id)
+      return { success: true }
+    } catch (error) {
+      console.error('Failed to delete template:', error)
+      return { success: false, error: String(error) }
+    }
+  })
+
   // --- ATTENDANCE ---
   ipcMain.handle('db:get-attendance', (_, appointmentId: string) => {
     try {
