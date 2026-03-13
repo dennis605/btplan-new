@@ -1,44 +1,58 @@
 import { NavLink } from 'react-router-dom';
-import electronLogo from '../assets/electron.svg';
 import './Sidebar.css';
+
+const navItems = [
+  { to: '/', label: 'Dashboard', icon: '⊞' },
+  { to: '/calendar', label: 'Wochenplan', icon: '▦' },
+  { to: '/dayview', label: 'Durchführung', icon: '✓' },
+  { to: '/daylist', label: 'Tagesübersicht', icon: '≡' },
+  { to: '/search', label: 'Suche', icon: '⌕' },
+  { to: '/reports', label: 'Berichte', icon: '⬡' },
+];
+
+const adminItems = [
+  { to: '/residents', label: 'Bewohner', icon: '' },
+  { to: '/activities', label: 'Aktivitäten', icon: '' },
+  { to: '/staff', label: 'Mitarbeiter', icon: '' },
+];
 
 export function Sidebar() {
   return (
     <aside className="sidebar no-print">
       <div className="sidebar-header">
-        <img src={electronLogo} alt="Logo" className="logo" />
-        <h2>BT-Plan</h2>
+        <div className="logo-mark">BT</div>
+        <div>
+          <h2>BT-Plan</h2>
+          <span className="sidebar-subtitle">Betreuungsplanung</span>
+        </div>
       </div>
       
       <nav className="sidebar-nav">
-        <NavLink to="/" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          📋 Dashboard
-        </NavLink>
-        <NavLink to="/search" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          🔍 Suche
-        </NavLink>
-        <NavLink to="/daylist" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          📑 Tagesübersicht
-        </NavLink>
-        <NavLink to="/calendar" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          📅 Wochenplan
-        </NavLink>
-        <NavLink to="/dayview" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          ✅ Durchführung
-        </NavLink>
-        <NavLink to="/reports" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          📄 Berichte
-        </NavLink>
-        <hr style={{ border: 'none', borderTop: '1px solid rgba(0,0,0,0.05)', margin: '4px 0' }} />
-        <NavLink to="/residents" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          👥 Bewohner
-        </NavLink>
-        <NavLink to="/activities" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          🎯 Aktivitäten
-        </NavLink>
-        <NavLink to="/staff" className={({isActive}) => isActive ? "nav-item active" : "nav-item"}>
-          👨‍⚕️ Mitarbeiter
-        </NavLink>
+        <div className="nav-section-label">Planung</div>
+        {navItems.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.to === '/'}
+            className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
+
+        <div className="nav-divider" />
+        <div className="nav-section-label">Stammdaten</div>
+        {adminItems.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+          >
+            <span className="nav-icon nav-dot">·</span>
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
       </nav>
       
       <div className="sidebar-footer">
@@ -46,7 +60,7 @@ export function Sidebar() {
           <span className="user-avatar">SD</span>
           <div className="user-details">
             <span className="user-name">Sozialer Dienst</span>
-            <span className="user-role">Administrator</span>
+            <span className="user-role">Einrichtung Musterheim</span>
           </div>
         </div>
       </div>

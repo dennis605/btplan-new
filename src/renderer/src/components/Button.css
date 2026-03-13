@@ -4,60 +4,62 @@
   justify-content: center;
   gap: var(--spacing-sm);
   font-family: var(--font-family);
+  font-size: 0.875rem;
   font-weight: 500;
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
   user-select: none;
+  letter-spacing: 0.01em;
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* Base minimum targets for tablets! */
-.btn-sm { padding: 4px 8px; font-size: 0.875rem; min-height: 32px; }
-.btn-md { padding: 8px 16px; font-size: 1rem; min-height: var(--touch-target); }
-.btn-lg { padding: 12px 24px; font-size: 1.125rem; min-height: 54px; }
+.btn-sm { padding: 4px 10px; font-size: 0.8125rem; min-height: 30px; }
+.btn-md { padding: 7px 14px; font-size: 0.875rem; min-height: var(--touch-target); }
+.btn-lg { padding: 10px 20px; font-size: 1rem; min-height: 48px; }
 
-/* Variants */
+/* Primary */
 .btn-primary {
   background-color: var(--primary);
   color: white;
-  box-shadow: var(--shadow-sm);
 }
 .btn-primary:not(:disabled):hover {
   background-color: var(--primary-hover);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
 }
 
+/* Secondary */
 .btn-secondary {
   background-color: var(--bg-surface);
   color: var(--text-main);
-  border-color: #e5e7eb;
-  box-shadow: var(--shadow-sm);
+  border-color: #d1d5db;
 }
 .btn-secondary:not(:disabled):hover {
   background-color: var(--bg-surface-hover);
-  border-color: #d1d5db;
+  border-color: #9ca3af;
 }
 
+/* Danger */
 .btn-danger {
-  background-color: var(--danger);
-  color: white;
+  background-color: transparent;
+  color: var(--danger);
+  border-color: #fca5a5;
 }
 .btn-danger:not(:disabled):hover {
-  background-color: #b91c1c;
+  background-color: var(--danger-bg);
 }
 
+/* Ghost */
 .btn-ghost {
   background-color: transparent;
   color: var(--text-muted);
+  border-color: transparent;
 }
 .btn-ghost:not(:disabled):hover {
-  background-color: rgba(0,0,0,0.05);
+  background-color: rgba(0,0,0,0.04);
   color: var(--text-main);
 }

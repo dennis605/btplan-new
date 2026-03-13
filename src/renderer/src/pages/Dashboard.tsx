@@ -1,90 +1,101 @@
 import { useState, useEffect, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/Button';
-import { format } from 'date-fns';
-import { de } from 'date-fns/locale';
-import { Appointment, Activity } from '../types';
 
 export function Dashboard(): ReactElement {
   const navigate = useNavigate();
-  const [todayAppts, setTodayAppts] = useState<Appointment[]>([]);
-  const [activities, setActivities] = useState<Activity[]>([]);
-
-  const loadTodayData = async () => {
-    const today = format(new Date(), 'yyyy-MM-dd');
-    const [appts, acts] = await Promise.all([
-      window.api.db.getAppointments({ start: today, end: today }),
-      window.api.db.getActivities()
-    ]);
-    setTodayAppts(appts);
-    setActivities(acts);
-  };
+  const [todayAppts, setTodayAppts] = useState<any[]>([]);
+  const [activities, setActivities] = useState<any[]>([]);
 
   useEffect(() => {
-    loadTodayData();
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    try {
+      window.api.db.getAppointments({ start: today, end: today }).then(setTodayAppts).catch(console.error);
+      window.api.db.getActivities().then(setActivities).catch(console.error);
+    } catch (e) {
+      console.error('Dashboard load error:', e);
+    }
   }, []);
 
-  return (
-    <div className="dashboard">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--spacing-xl)' }}>
-        <div>
-          <h1 style={{ marginBottom: '4px' }}>Guten Tag, Sozialer Dienst!</h1>
-          <p style={{ margin: 0 }}>Hier ist die Übersicht für heute, den {format(new Date(), 'dd. MMMM yyyy', { locale: de })}.</p>
-        </div>
-        <div style={{ display: 'flex', gap: 'var(--spacing-sm)' }}>
-          <Button variant="secondary" onClick={() => navigate('/dayview')}>Zur Durchführung</Button>
-          <Button variant="primary" onClick={() => navigate('/calendar')}>+ Neuer Termin</Button>
-        </div>
-      </header>
+  const todayStr = new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)', gap: 'var(--spacing-lg)' }}>
-        <div className="surface">
-          <h3 style={{ marginBottom: 'var(--spacing-md)' }}>Heutige Aktivitäten</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1>Übersicht</h1>
+          <p>{todayStr}</p>
+        </div>
+        <Button variant="primary" onClick={() => navigate('/calendar')}>
+          + Neuer Termin
+        </Button>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+        {/* Heutige Aktivitäten */}
+        <div className="surface" style={{ padding: '20px' }}>
+          <h3 style={{ marginBottom: '16px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.6875rem', letterSpacing: '0.08em' }}>
+            Heutige Aktivitäten
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {todayAppts.map(appt => {
               const act = activities.find(a => a.id === appt.activityId);
               return (
-                <div key={appt.id} style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '16px', 
-                  padding: '12px', 
-                  backgroundColor: 'var(--bg-color)', 
+                <div key={appt.id} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px 12px',
+                  backgroundColor: 'var(--bg-color)',
                   borderRadius: 'var(--radius-sm)',
-                  borderLeft: `4px solid ${act?.color || 'var(--primary)'}`
+                  borderLeft: `3px solid ${act?.color || 'var(--primary)'}`,
                 }}>
-                  <div style={{ fontWeight: 700, minWidth: '100px', color: 'var(--text-muted)' }}>
-                    {appt.startTime} - {appt.endTime}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 600 }}>{act?.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{appt.room || 'Kein Ort angegeben'}</div>
-                  </div>
-                  <Button variant="ghost" onClick={() => navigate('/calendar')}>Details</Button>
+                  <span style={{ fontWeight: 600, fontSize: '0.8125rem', color: 'var(--text-muted)', minWidth: '90px', fontVariantNumeric: 'tabular-nums' }}>
+                    {appt.startTime} – {appt.endTime}
+                  </span>
+                  <span style={{ fontWeight: 500, fontSize: '0.9375rem', flex: 1 }}>{act?.name || 'Unbekannt'}</span>
+                  {appt.room && <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{appt.room}</span>}
                 </div>
               );
             })}
             {todayAppts.length === 0 && (
-              <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 'var(--spacing-xl)' }}>
-                Für heute sind noch keine Aktivitäten geplant. Starten Sie mit dem Wochenplan!
+              <p style={{ color: 'var(--text-muted)', margin: '12px 0', fontSize: '0.9375rem' }}>
+                Für heute sind keine Aktivitäten geplant.
               </p>
             )}
           </div>
         </div>
-        
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-lg)' }}>
-          <div className="surface">
-            <h3>Schnellzugriff</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)', marginTop: 'var(--spacing-md)' }}>
-              <Button variant="secondary" onClick={() => navigate('/reports')}>📄 Monatsnachweis erstellen</Button>
-              <Button variant="secondary" onClick={() => navigate('/residents')}>👥 Bewohnerdaten importieren</Button>
+
+        {/* Rechte Spalte */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="surface" style={{ padding: '20px' }}>
+            <h3 style={{ marginBottom: '12px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.6875rem', letterSpacing: '0.08em' }}>
+              Schnellzugriff
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <Button variant="secondary" onClick={() => navigate('/reports')}>
+                Monatsnachweis erstellen
+              </Button>
+              <Button variant="secondary" onClick={() => navigate('/dayview')}>
+                Zur Durchführung
+              </Button>
+              <Button variant="secondary" onClick={() => navigate('/residents')}>
+                Bewohnerdaten verwalten
+              </Button>
             </div>
           </div>
 
-          <div className="surface" style={{ backgroundColor: 'var(--primary)', color: 'white' }}>
-            <h3 style={{ color: 'white' }}>Statistik (Vorschau)</h3>
-            <div style={{ fontSize: '2rem', fontWeight: 700, margin: '12px 0' }}>128</div>
-            <p style={{ color: 'rgba(255,255,255,0.8)', margin: 0, fontSize: '0.9rem' }}>Teilnahmen diese Woche dokumentiert.</p>
+          <div className="surface" style={{ padding: '20px' }}>
+            <h3 style={{ marginBottom: '4px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.6875rem', letterSpacing: '0.08em' }}>
+              Diese Woche
+            </h3>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-main)', marginTop: '8px' }}>
+              {todayAppts.length}
+            </div>
+            <p style={{ margin: 0, fontSize: '0.875rem' }}>
+              Termine heute geplant
+            </p>
           </div>
         </div>
       </div>
