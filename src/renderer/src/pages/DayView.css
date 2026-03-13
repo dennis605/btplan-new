@@ -1,0 +1,128 @@
+.day-view {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100%;
+  gap: var(--spacing-md);
+}
+
+.appt-list-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  height: 100%;
+}
+
+.appt-items {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.appt-item {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background-color: var(--bg-color);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.appt-item:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+.appt-item.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+.appt-item .time {
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.appt-item .title {
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.day-content {
+  height: 100%;
+}
+
+.attendance-tracker {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+}
+
+.tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.resident-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-md);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.resident-card {
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  background-color: white;
+}
+
+.resident-card .name {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.status-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--spacing-xs);
+}
+
+.status-btn {
+  border: 1px solid rgba(0,0,0,0.1);
+  background-color: var(--bg-color);
+  padding: 8px 4px;
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.status-btn.active {
+  color: white;
+}
+
+.btn-present.active { background-color: var(--success); border-color: var(--success); }
+.btn-absent.active { background-color: var(--danger); border-color: var(--danger); }
+.btn-sick.active { background-color: #6366f1; border-color: #6366f1; }
+
+.status-attended { border-left: 6px solid var(--success); }
+.status-cancelled { border-left: 6px solid var(--danger); }
+.status-sick { border-left: 6px solid #6366f1; }
+.status-planned { border-left: 6px solid #d1d5db; }
+
+.empty-attendance {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-muted);
+}

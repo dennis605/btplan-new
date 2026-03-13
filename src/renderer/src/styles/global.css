@@ -1,0 +1,151 @@
+/* =========================================================================
+   Globale Variablen (Design System)
+   Fokus auf Kontrast, große Touch-Ziele und eine leichte "Glassmorphismus" 
+   Ästhetik für ein modernes, freundliches Pflege-Tool.
+   ========================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Farben - Basis */
+  --bg-color: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  
+  /* Farben - Primär (Premium Indigo) */
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: #eef2ff;
+  
+  /* Farben - Text */
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  
+  /* Typografie */
+  --font-family: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+  
+  /* Layout & Abstände */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  
+  /* Schatten */
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* =========================================================================
+   Reset & Basis
+   ========================================================================= */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  
+  /* Verhindert Text-Markierung bei Touch-Bedienung in der App */
+  user-select: none; 
+}
+
+/* Erlaube Text-Markierung nur in Input-Feldern */
+input, textarea {
+  user-select: auto;
+}
+
+/* =========================================================================
+   Typography
+   ========================================================================= */
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: var(--spacing-sm);
+}
+
+h1 { font-size: 1.875rem; letter-spacing: -0.025em; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+p { margin-bottom: var(--spacing-md); color: var(--text-muted); }
+
+/* =========================================================================
+   Allgemeine Layout-Klassen
+   ========================================================================= */
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: var(--bg-color);
+  padding: var(--spacing-xl);
+}
+
+/* Card-Design (Glassmorphismus inspiriert) */
+.surface {
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: var(--spacing-lg);
+}
+
+/* =========================================================================
+   Scrollbar-Styling für Desktop-App
+   ========================================================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* =========================================================================
+   Druck-Ansicht (Wichtig für Pläne!)
+   ========================================================================= */
+@media print {
+  body {
+    background: white;
+    font-size: 12pt;
+    color: black;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .surface {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}

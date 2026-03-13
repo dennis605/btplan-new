@@ -1,0 +1,41 @@
+.day-list-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.day-list-container {
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.day-list-item {
+  border: 1px solid rgba(0,0,0,0.1);
+  margin-bottom: 8px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+}
+
+.item-text {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.legacy-btn {
+  background-color: #f1f5f9;
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 4px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+}
+
+.date-picker-input {
+  padding: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: var(--radius-sm);
+}

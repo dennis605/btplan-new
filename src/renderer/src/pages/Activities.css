@@ -1,0 +1,62 @@
+.activities-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.activity-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: var(--spacing-md);
+  transition: transform 0.2s;
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.activity-info h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1.125rem;
+}
+
+.activity-info p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.duration {
+  margin-top: var(--spacing-sm) !important;
+  color: var(--text-muted);
+}
+
+.badge-secondary {
+  background-color: var(--bg-color);
+  color: var(--text-muted);
+}
+
+.card-actions {
+  display: flex;
+  gap: 2px;
+}
+
+.activity-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.empty-msg {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--text-muted);
+}

@@ -1,0 +1,71 @@
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.reports-form {
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.export-section h3 {
+  margin-bottom: var(--spacing-xs);
+}
+
+.export-section .description {
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-lg);
+  font-size: 0.9375rem;
+}
+
+.form-row {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.print-template {
+  display: none;
+}
+
+/* Print CSS */
+@media print {
+  body.exporting-pdf .header, 
+  body.exporting-pdf .sidebar,
+  body.exporting-pdf .reports-form,
+  body.exporting-pdf .page-header {
+    display: none !important;
+  }
+
+  body.exporting-pdf .app-main {
+    padding: 0;
+    margin: 0;
+  }
+
+  body.exporting-pdf .print-template {
+    display: block;
+    padding: 2cm;
+  }
+
+  .print-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+    border-bottom: 2px solid black;
+    padding-bottom: 10px;
+  }
+
+  .empty-print-box {
+    margin-top: 50px;
+    border: 1px dashed #ccc;
+    padding: 100px;
+    text-align: center;
+  }
+}
