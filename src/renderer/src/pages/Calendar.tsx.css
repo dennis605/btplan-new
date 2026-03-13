@@ -16,6 +16,62 @@
   gap: var(--spacing-md);
   flex-shrink: 0;
   border: 1px solid rgba(0,0,0,0.05);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease, opacity 0.3s ease;
+  position: relative;
+}
+
+.mini-cal-sidebar.collapsed {
+  width: 0;
+  padding: 0;
+  opacity: 0;
+  overflow: hidden;
+  border: none;
+  pointer-events: none;
+}
+
+.calendar-sidebar-toggle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.calendar-sidebar-toggle:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.burger-icon {
+  width: 18px;
+  height: 2px;
+  background: var(--text-muted);
+  position: relative;
+  transition: all 0.2s;
+}
+
+.burger-icon::before,
+.burger-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 18px;
+  height: 2px;
+  background: inherit;
+}
+
+.burger-icon::before { top: -6px; }
+.burger-icon::after { top: 6px; }
+
+.calendar-sidebar-toggle:hover .burger-icon {
+  background: var(--primary);
 }
 
 .mini-cal-header {

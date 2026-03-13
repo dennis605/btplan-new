@@ -36,6 +36,9 @@ export function CalendarPage(): ReactElement {
   const [newActColor, setNewActColor] = useState('#2563eb');
   const [creatingAct, setCreatingAct] = useState(false);
 
+  // Sidebar Zustand
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
@@ -157,46 +160,59 @@ export function CalendarPage(): ReactElement {
   return (
     <div className="calendar-layout">
       {/* Mini-Kalender Seitenleiste */}
-      <aside className="mini-cal-sidebar">
-        <div className="mini-cal-header">
-          <button className="mini-nav-btn" onClick={() => setMiniMonth(subMonths(miniMonth, 1))}>‹</button>
-          <div className="mini-cal-month">{format(miniMonth, 'MMMM yyyy', { locale: de })}</div>
-          <button className="mini-nav-btn" onClick={() => setMiniMonth(addMonths(miniMonth, 1))}>›</button>
-        </div>
-        <div className="mini-cal-weekdays">
-          {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map(d => (
-            <span key={d} className="mini-wd-label">{d}</span>
-          ))}
-        </div>
-        <div className="mini-cal-grid">
-          {miniEmptyDays.map((_, i) => <span key={`e-${i}`} />)}
-          {miniDays.map(day => {
-            const isToday = isSameDay(day, new Date());
-            const isSelectedWeek = weekDays.some(wd => isSameDay(wd, day));
-            return (
-              <button
-                key={day.toISOString()}
-                className={`mini-day${isToday ? ' mini-today' : ''}${isSelectedWeek ? ' mini-selected-week' : ''}`}
-                onClick={() => jumpToWeek(day)}
-              >
-                {format(day, 'd')}
+      <aside className={`mini-cal-sidebar ${isSidebarOpen ? '' : 'collapsed'}`}>
+        {isSidebarOpen && (
+          <>
+            <div className="mini-cal-header">
+              <button className="mini-nav-btn" onClick={() => setMiniMonth(subMonths(miniMonth, 1))}>‹</button>
+              <div className="mini-cal-month">{format(miniMonth, 'MMMM yyyy', { locale: de })}</div>
+              <button className="mini-nav-btn" onClick={() => setMiniMonth(addMonths(miniMonth, 1))}>›</button>
+            </div>
+            <div className="mini-cal-weekdays">
+              {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map(d => (
+                <span key={d} className="mini-wd-label">{d}</span>
+              ))}
+            </div>
+            <div className="mini-cal-grid">
+              {miniEmptyDays.map((_, i) => <span key={`e-${i}`} />)}
+              {miniDays.map(day => {
+                const isToday = isSameDay(day, new Date());
+                const isSelectedWeek = weekDays.some(wd => isSameDay(wd, day));
+                return (
+                  <button
+                    key={day.toISOString()}
+                    className={`mini-day${isToday ? ' mini-today' : ''}${isSelectedWeek ? ' mini-selected-week' : ''}`}
+                    onClick={() => jumpToWeek(day)}
+                  >
+                    {format(day, 'd')}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mini-cal-actions">
+              <button className="mini-action-btn" onClick={() => { setCurrentDate(new Date()); setMiniMonth(new Date()); }}>
+                Heute
               </button>
-            );
-          })}
-        </div>
-        <div className="mini-cal-actions">
-          <button className="mini-action-btn" onClick={() => { setCurrentDate(new Date()); setMiniMonth(new Date()); }}>
-            Heute
-          </button>
-        </div>
+            </div>
+          </>
+        )}
       </aside>
 
       {/* Hauptbereich */}
       <div className="calendar-page">
         <header className="page-header">
-          <div>
-            <h1>Wochenplanung</h1>
-            <p>{format(weekDays[0], 'dd. MMMM', { locale: de })} – {format(weekDays[6], 'dd. MMMM yyyy', { locale: de })}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <button 
+              className="calendar-sidebar-toggle" 
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              title={isSidebarOpen ? "Seitenleiste ausblenden" : "Seitenleiste einblenden"}
+            >
+              <span className="burger-icon" />
+            </button>
+            <div>
+              <h1>Wochenplanung</h1>
+              <p>{format(weekDays[0], 'dd. MMMM', { locale: de })} – {format(weekDays[6], 'dd. MMMM yyyy', { locale: de })}</p>
+            </div>
           </div>
           <div className="calendar-nav">
             <div className="nav-group">
