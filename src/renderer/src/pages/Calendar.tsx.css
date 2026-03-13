@@ -157,11 +157,175 @@
   margin-top: 2px;
 }
 
-.legacy-form-container {
-  display: flex;
-  gap: var(--spacing-xl);
+/* =============================================
+   Appointment Form Modal (new clean layout)
+   ============================================= */
+.appt-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 24px;
   max-height: 75vh;
+  overflow-y: auto;
 }
+
+.appt-form-left {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-field label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.form-input,
+.form-select-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: var(--font-family);
+  color: var(--text-main);
+  background: white;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus,
+.form-select-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-sm);
+  font-size: 0.9375rem;
+  font-family: var(--font-family);
+  color: var(--text-main);
+  background: white;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Right column: Resident list */
+.appt-form-right {
+  border-left: 1px solid #e5e7eb;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.resident-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resident-count {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 0.8125rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.resident-list {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 55vh;
+}
+
+.resident-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background 0.1s;
+}
+
+.resident-row:hover {
+  background-color: var(--bg-color);
+}
+
+.resident-row.selected {
+  background-color: var(--primary-light);
+}
+
+.resident-row input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.resident-name {
+  flex: 1;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.resident-ward {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
 
 .legacy-form-col {
   flex: 1.5;
